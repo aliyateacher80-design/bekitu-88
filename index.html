@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЖИ-Детектив: Эксель Формулаларын Құрастыр!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #1f4e79;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            font-size: 1.1em;
+            color: #555;
+            text-align: center;
+            max-width: 700px;
+            margin-bottom: 25px;
+        }
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 900px;
+        }
+        .draggable-box {
+            background: #ffffff;
+            border: 2px dashed #1f4e79;
+            border-radius: 10px;
+            padding: 15px;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .drop-box {
+            background: #ffffff;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            flex: 1;
+            min-width: 300px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        h3 {
+            margin-top: 0;
+            color: #1f4e79;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+        .chip {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            cursor: grab;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.1em;
+            transition: all 0.2s ease;
+        }
+        .chip:active {
+            cursor: grabbing;
+        }
+        .drop-zone {
+            background-color: #fafafa;
+            border: 2px dashed #bbb;
+            border-radius: 6px;
+            min-height: 50px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            color: #888;
+            transition: background 0.3s;
+        }
+        .drop-zone.over {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        .correct {
+            background-color: #c8e6c9 !important;
+            border-color: #4caf50 !important;
+            color: #2e7d32 !important;
+        }
+        .incorrect {
+            background-color: #ffcdd2 !important;
+            border-color: #e53935 !important;
+            color: #c62828 !important;
+        }
+        .btn-reset {
+            margin-top: 25px;
+            padding: 12px 25px;
+            background-color: #1f4e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-reset:hover {
+            background-color: #153451;
+        }
+        .ai-avatar {
+            font-size: 2em;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1><span class="ai-avatar">🤖</span> ЖИ-Детектив: Сүйреп апар да, сәйкестендір!</h1>
+    <p class="subtitle">ЖАИ-Робот Эксель кестесін шатастырып алды! Сол жақтағы формула бөліктерін саусағыңызбен немесе тінтуірмен сүйреп, оң жақтағы дұрыс тапсырма ұяшықтарына орналастырыңыз.</p>
+
+    <div class="game-container">
+        <!-- Блок с элементами Drag -->
+        <div class="draggable-box">
+            <h3>🧩 Формула компоненттері</h3>
+            <div class="chip" draggable="true" id="f1" data-target="z2">=СТЕПЕНЬ(C2; 2)</div>
+            <div class="chip" draggable="true" id="f2" data-target="z1">=СУММЕСЛИ(B2:B6; "Раушан"; C2:C6)</div>
+            <div class="chip" draggable="true" id="f3" data-target="z3">=SUM(C2:C6)</div>
+            <div class="chip" draggable="true" id="f4" data-target="z4">=ABS(C2)</div>
+        </div>
+
+        <!-- Блок с зонными Drop -->
+        <div class="drop-box">
+            <h3>🎯 Тапсырмалар мен Кезеңдер</h3>
+            
+            <p><b>1-Тапсырма:</b> Тек «Раушан» гүлінің сатылым санын есептеу:</p>
+            <div class="drop-zone" id="z1" data-accept="f2">Осы жерге сүйреп әкеліңіз</div>
+
+            <p><b>2-Тапсырма:</b> Оқушы бағасының квадратын табу:</p>
+            <div class="drop-zone" id="z2" data-accept="f1">Осы жерге сүйреп әкеліңіз</div>
+
+            <p><b>3-Тапсырма:</b> Барлық оқушы бағасының жалпы қосындысы:</p>
+            <div class="drop-zone" id="z3" data-accept="f3">Осы жерге сүйреп әкеліңіз</div>
+
+            <p><b>4-Тапсырма:</b> Санның модулін (оң мәнін) анықтау:</p>
+            <div class="drop-zone" id="z4" data-accept="f4">Осы жерге сүйреп әкеліңіз</div>
+        </div>
+    </div>
+
+    <button class="btn-reset" onclick="location.reload()">🔄 Қайтадан бастау</button>
+
+    <script>
+        const chips = document.querySelectorAll('.chip');
+        const dropZones = document.querySelectorAll('.drop-zone');
+
+        chips.forEach(chip => {
+            chip.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', chip.id);
+            });
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                zone.classList.add('over');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('over');
+            });
+
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('over');
+                const chipId = e.dataTransfer.getData('text/plain');
+                const chip = document.getElementById(chipId);
+
+                if (zone.dataset.accept === chipId) {
+                    zone.innerHTML = '';
+                    zone.appendChild(chip);
+                    chip.classList.add('correct');
+                    chip.draggable = false;
+                } else {
+                    zone.innerHTML = '';
+                    zone.appendChild(chip);
+                    chip.classList.add('incorrect');
+                    setTimeout(() => {
+                        document.querySelector('.draggable-box').appendChild(chip);
+                        chip.classList.remove('incorrect');
+                        zone.innerHTML = 'Осы жерге сүйреп әкеліңіз';
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
